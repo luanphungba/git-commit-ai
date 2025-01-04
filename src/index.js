@@ -1,45 +1,62 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import chalk from 'chalk';
 import { generateCommitMessage } from './commitGenerator.js';
+import simpleGit from 'simple-git';
+import chalk from 'chalk';
+import { spawn } from 'child_process';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 const program = new Command();
+const git = simpleGit();
 
 program
   .name('git-commit-ai')
-  .description('Generate AI-powered commit messages from git diff')
+  .description('AI-powered git commit message generator')
+  .version('1.0.0')
   .option('-d, --debug', 'output debug information')
-  .option('-s, --stage', 'automatically stage all changes')
+  .option('-s, --stage', 'stage all changes')
   .option('-c, --commit', 'automatically commit with generated message')
-  .parse(process.argv);
+  .option('--setup', 'run the setup process to configure API key');
+
+program.parse();
 
 const options = program.opts();
 
 async function main() {
   try {
+    // Handle setup command
+    if (options.setup) {
+      const setupScript = join(dirname(fileURLToPath(import.meta.url)), '../scripts/setup.js');
+      spawn('node', [setupScript], { stdio: 'inherit' });
+      return;
+    }
+
     const result = await generateCommitMessage(options);
-    
-    if (options.commit && result.hasSensitiveInfo) {
-      console.log(chalk.red('\n❌ Commit aborted due to sensitive information in changes.'));
-      console.log(chalk.yellow('Please review the warnings above and try again after removing sensitive data.'));
+
+    if (result.hasSensitiveInfo && options.commit) {
+      console.log(chalk.red('\n❌ Automatic commit blocked due to sensitive information.\n'));
       process.exit(1);
     }
 
+    console.log(chalk.green('\n📝 Suggested commit message:'));
+    console.log(chalk.cyan(result.message));
+
     if (options.commit) {
-      console.log(chalk.green('✓ Changes committed with message:'));
-      console.log(chalk.white(result.message));
+      await git.commit(result.message);
+      console.log(chalk.green('\n✅ Changes committed successfully!\n'));
     } else {
-      console.log(chalk.blue('Suggested commit message:'));
-      console.log(chalk.white(result.message));
-      if (result.hasSensitiveInfo) {
-        console.log(chalk.yellow('\nNote: Due to sensitive information, using --commit would be blocked.'));
-      } else {
-        console.log(chalk.gray('\nRun with --commit to automatically commit changes'));
-      }
+      console.log(chalk.blue('\nTo use this message, run:'));
+      console.log(chalk.cyan(`git commit -m "${result.message}"\n`));
     }
+
   } catch (error) {
-    console.error(chalk.red('Error:'), error.message);
+    console.error(chalk.red('\n❌ Error:'), error.message);
+    if (error.message.includes('OPENAI_API_KEY')) {
+      console.log(chalk.yellow('\nPlease run setup to configure your OpenAI API key:'));
+      console.log(chalk.cyan('git-commit-ai --setup\n'));
+    }
     process.exit(1);
   }
 }

@@ -7,7 +7,7 @@ import chalk from 'chalk';
 
 // Configuration
 const CONFIG = {
-	openAiModel: 'gpt-3.5-turbo',
+	openAiModel: 'gpt-4-1106-preview',
 	maxTokens: 500,
 	temperature: 0.7
 };
@@ -50,14 +50,18 @@ const createAIPrompt = (diff) => ({
 		{
 			role: "system",
 			content: `You are an AI assistant that performs two tasks:
-1. Security check: Analyze the git diff for sensitive information (API keys, passwords, tokens, private keys, etc.)
-2. Generate a commit message: Create a clear, concise commit message following conventional commits format.
+1. Security check: Analyze the git diff for sensitive information. When found, specify:
+   - The file path
+   - The line number or context
+   - The type of sensitive information (API key, password, token, etc.)
+   - A brief description of the issue
+2. Generate a commit message: Create a clear, concise and precise commit message following conventional commits format.
 
 Respond in the following JSON format:
 {
   "security": {
     "hasSensitiveInfo": boolean,
-    "details": string or null
+    "details": string (Format each issue as "file.js:line - [type]: description")
   },
   "commit": {
     "message": string

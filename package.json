@@ -1,15 +1,42 @@
 {
   "name": "git-commit-ai",
   "version": "1.0.0",
+  "description": "AI-powered git commit message generator with security checks",
   "type": "module",
+  "main": "src/index.js",
   "bin": {
     "git-commit-ai": "./src/index.js"
   },
+  "scripts": {
+    "start": "node src/index.js",
+    "postinstall": "node scripts/setup.js"
+  },
+  "keywords": [
+    "git",
+    "commit",
+    "ai",
+    "openai",
+    "cli",
+    "security"
+  ],
+  "author": "Luan Phung",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luanphungba/git-commit-ai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/luanphungba/git-commit-ai/issues"
+  },
+  "homepage": "https://github.com/luanphungba/git-commit-ai#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "dependencies": {
-    "chalk": "^5.4.1",
-    "commander": "^13.0.0",
-    "dotenv": "^16.4.7",
-    "openai": "^4.77.3",
-    "simple-git": "^3.27.0"
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "dotenv": "^16.3.1",
+    "openai": "^4.0.0",
+    "simple-git": "^3.22.0"
   }
 }
