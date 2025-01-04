@@ -1,0 +1,15 @@
+{
+  "name": "git-commit-ai",
+  "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "git-commit-ai": "./src/index.js"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^13.0.0",
+    "dotenv": "^16.4.7",
+    "openai": "^4.77.3",
+    "simple-git": "^3.27.0"
+  }
+}
