@@ -17,16 +17,16 @@ const getStagedChanges = async (shouldStage, git) => {
 
 	// First check staged changes
 	let diff = await git.diff(['--staged']);
-	
+
 	// If no staged changes, check all changes
 	if (!diff) {
 		diff = await git.diff();
-		
+
 		// If still no changes, throw error
 		if (!diff) {
 			throw new Error('No changes found in the repository.');
 		}
-		
+
 		console.log(chalk.yellow('\n⚠️  No staged changes found. Analyzing all unstaged changes instead.'));
 	}
 
@@ -98,7 +98,7 @@ const parseAIResponse = (response) => {
 export async function generateCommitMessage(options) {
 	const git = initializeGit();
 	const openai = initializeOpenAI();
-	
+
 	const diff = await getStagedChanges(options.stage, git);
 
 	if (options.debug) {
