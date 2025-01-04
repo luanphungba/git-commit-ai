@@ -16,7 +16,7 @@ A CLI tool that uses AI to generate meaningful commit messages by analyzing your
 ## Installation 🛠️
 
 1. Clone the repository:
-   git clone https://github.com/yourusername/git-commit-ai.git
+   git clone https://github.com/luanphungba/git-commit-ai.git
    cd git-commit-ai
 
 2. Install dependencies:
