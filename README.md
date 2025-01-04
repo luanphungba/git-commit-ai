@@ -1,6 +1,6 @@
-# git-commit-ai 🤖
+# commit-ai 🤖
 
-A CLI tool that uses AI to generate meaningful commit messages by analyzing your git diff. Powered by OpenAI's GPT-3.5.
+A CLI tool that uses AI to generate meaningful commit messages by analyzing your git diff. Powered by OpenAI's GPT-4.
 
 ## Features ✨
 
@@ -15,35 +15,46 @@ A CLI tool that uses AI to generate meaningful commit messages by analyzing your
 
 ## Installation 🛠️
 
-1. Clone the repository:
-   git clone https://github.com/luanphungba/git-commit-ai.git
-   cd git-commit-ai
+Install globally using npm:
 
-2. Install dependencies:
-   npm install
+    npm install -g @phungbaluan/commit-ai
 
-3. Install globally:
-   npm install -g .
+After installation, run the setup to configure your OpenAI API key:
 
-4. Set up your OpenAI API key:
-   Create a .env file in the project root and add your OpenAI API key:
-   OPENAI_API_KEY=your_openai_api_key_here
+    commit-ai --setup
+    # or use the shorter alias
+    cai --setup
+
+You'll be prompted to enter your OpenAI API key. You can get one at: https://platform.openai.com/api-keys
 
 ## Usage 💻
 
 ### Basic Usage
 
-# See suggested commit message for staged changes
-git-commit-ai
+    # See suggested commit message for staged changes
+    commit-ai
+    # or
+    cai
 
-# Stage all changes and see suggested message
-git-commit-ai --stage
+    # Stage all changes and see suggested message
+    commit-ai --stage
+    # or
+    cai -s
 
-# Stage and commit automatically
-git-commit-ai --stage --commit
+    # Stage and commit automatically
+    commit-ai --stage --commit
+    # or
+    cai -sc
 
-# See debug information
-git-commit-ai --debug
+    # See debug information
+    commit-ai --debug
+    # or
+    cai -d
+
+    # Update your OpenAI API key
+    commit-ai --setup
+    # or
+    cai --setup
 
 ### Security Features
 
@@ -66,6 +77,8 @@ If sensitive information is detected:
 - -d, --debug: Output debug information
 - -s, --stage: Automatically stage all changes
 - -c, --commit: Automatically commit with generated message
+- --setup: Configure or update OpenAI API key
+
 Note: The --commit option will be blocked if sensitive information is detected
 
 ## How it Works 🔍

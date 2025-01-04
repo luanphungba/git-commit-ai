@@ -1,11 +1,12 @@
 {
-  "name": "git-commit-ai",
-  "version": "1.0.0",
+  "name": "@phungbaluan/commit-ai",
+  "version": "1.0.2",
   "description": "AI-powered git commit message generator with security checks",
   "type": "module",
   "main": "src/index.js",
   "bin": {
-    "git-commit-ai": "./src/index.js"
+    "commit-ai": "./src/index.js",
+    "cai": "./src/index.js"
   },
   "scripts": {
     "start": "node src/index.js",
@@ -38,5 +39,8 @@
     "dotenv": "^16.3.1",
     "openai": "^4.0.0",
     "simple-git": "^3.22.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

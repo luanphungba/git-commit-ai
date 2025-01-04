@@ -7,7 +7,7 @@ import chalk from 'chalk';
 
 // Configuration
 const CONFIG = {
-	openAiModel: 'gpt-4-1106-preview',
+	openAiModel: 'gpt-4o-mini', // better for pricing
 	maxTokens: 500,
 	temperature: 0.7
 };
@@ -18,10 +18,17 @@ const setupEnvironment = () => {
 	const __dirname = dirname(__filename);
 	dotenv.config({ path: join(__dirname, '../.env') });
 
+	const apiKey = process.env.OPENAI_API_KEY;
+	if (!apiKey) {
+		console.log(chalk.red('\n❌ OpenAI API key not found!'));
+		console.log(chalk.yellow('\nPlease set up your environment first using commit-ai --setup or cai --setup'));
+		process.exit(1);
+	}
+
 	return {
 		git: simpleGit(),
 		openai: new OpenAI({
-			apiKey: process.env.OPENAI_API_KEY,
+			apiKey: apiKey,
 			defaultHeaders: { 'OpenAI-Beta': 'assistants=v1' }
 		})
 	};
