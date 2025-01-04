@@ -16,7 +16,7 @@ const rl = readline.createInterface({
 const question = (query) => new Promise((resolve) => rl.question(query, resolve));
 
 async function setup() {
-  console.log(chalk.cyan('\n🤖 Welcome to git-commit-ai setup!\n'));
+  console.log(chalk.cyan('\n🤖 Welcome to commit-ai setup!\n'));
 
   try {
     // Check if .env already exists
@@ -33,7 +33,7 @@ async function setup() {
       // .env doesn't exist, continue with setup
     }
 
-    console.log(chalk.blue('\nTo use git-commit-ai, you need an OpenAI API key.'));
+    console.log(chalk.blue('\nTo use commit-ai, you need an OpenAI API key.'));
     console.log(chalk.blue('You can get one at: https://platform.openai.com/api-keys\n'));
 
     const apiKey = await question('Please enter your OpenAI API key: ');
@@ -41,7 +41,7 @@ async function setup() {
     if (!apiKey) {
       console.log(chalk.red('\n❌ No API key provided. Setup cancelled.\n'));
       console.log(chalk.yellow('You can run setup again using:'));
-      console.log(chalk.yellow('npx git-commit-ai setup\n'));
+      console.log(chalk.yellow('npx cai setup\n'));
       process.exit(1);
     }
 
@@ -49,13 +49,11 @@ async function setup() {
     await fs.writeFile(ENV_PATH, `OPENAI_API_KEY=${apiKey.trim()}\n`);
 
     console.log(chalk.green('\n✅ Setup complete! Your API key has been saved.\n'));
-    console.log(chalk.blue('You can now use git-commit-ai with:'));
-    console.log(chalk.cyan('git-commit-ai --stage\n'));
+    console.log(chalk.blue('You can now use cai with:'));
+    console.log(chalk.cyan('cai --stage\n'));
 
   } catch (error) {
     console.error(chalk.red('\n❌ Error during setup:'), error.message);
-    console.log(chalk.yellow('\nYou can try running setup again using:'));
-    console.log(chalk.yellow('npx git-commit-ai setup\n'));
     process.exit(1);
   } finally {
     rl.close();

@@ -1,6 +1,6 @@
 {
   "name": "@phungbaluan/commit-ai",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "AI-powered git commit message generator with security checks",
   "type": "module",
   "main": "src/index.js",

@@ -1,9 +1,6 @@
-import simpleGit from 'simple-git';
 import { OpenAI } from 'openai';
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 import chalk from 'chalk';
+import { initializeGit, initializeOpenAI } from './clients.js';
 
 // Configuration
 const CONFIG = {
@@ -12,40 +9,25 @@ const CONFIG = {
 	temperature: 0.7
 };
 
-// Initialize environment and clients
-const setupEnvironment = () => {
-	const __filename = fileURLToPath(import.meta.url);
-	const __dirname = dirname(__filename);
-	dotenv.config({ path: join(__dirname, '../.env') });
-
-	const apiKey = process.env.OPENAI_API_KEY;
-	if (!apiKey) {
-		console.log(chalk.red('\n❌ OpenAI API key not found!'));
-		console.log(chalk.yellow('\nPlease set up your environment first using commit-ai --setup or cai --setup'));
-		process.exit(1);
-	}
-
-	return {
-		git: simpleGit(),
-		openai: new OpenAI({
-			apiKey: apiKey,
-			defaultHeaders: { 'OpenAI-Beta': 'assistants=v1' }
-		})
-	};
-};
-
-const { git, openai } = setupEnvironment();
-
 // Helper functions
-const getStagedChanges = async (shouldStage) => {
+const getStagedChanges = async (shouldStage, git) => {
 	if (shouldStage) {
 		await git.add('.');
 	}
 
-	const diff = await git.diff(['--staged']);
-
+	// First check staged changes
+	let diff = await git.diff(['--staged']);
+	
+	// If no staged changes, check all changes
 	if (!diff) {
-		throw new Error('No staged changes found. Use --stage option or stage changes manually.');
+		diff = await git.diff();
+		
+		// If still no changes, throw error
+		if (!diff) {
+			throw new Error('No changes found in the repository.');
+		}
+		
+		console.log(chalk.yellow('\n⚠️  No staged changes found. Analyzing all unstaged changes instead.'));
 	}
 
 	return diff;
@@ -113,10 +95,13 @@ const parseAIResponse = (response) => {
 };
 
 // Main function
-export async function generateCommitMessage({ debug, stage }) {
-	const diff = await getStagedChanges(stage);
+export async function generateCommitMessage(options) {
+	const git = initializeGit();
+	const openai = initializeOpenAI();
+	
+	const diff = await getStagedChanges(options.stage, git);
 
-	if (debug) {
+	if (options.debug) {
 		console.log('Git diff:', diff);
 	}
 

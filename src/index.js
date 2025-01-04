@@ -2,17 +2,16 @@
 
 import { Command } from 'commander';
 import { generateCommitMessage } from './commitGenerator.js';
-import simpleGit from 'simple-git';
+import { initializeGit } from './clients.js';
 import chalk from 'chalk';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const program = new Command();
-const git = simpleGit();
 
 program
-  .name('git-commit-ai')
+  .name('cai')
   .description('AI-powered git commit message generator')
   .version('1.0.0')
   .option('-d, --debug', 'output debug information')
@@ -44,6 +43,7 @@ async function main() {
     console.log(chalk.cyan(result.message));
 
     if (options.commit) {
+      const git = initializeGit();
       await git.commit(result.message);
       console.log(chalk.green('\n✅ Changes committed successfully!\n'));
     } else {
@@ -55,7 +55,7 @@ async function main() {
     console.error(chalk.red('\n❌ Error:'), error.message);
     if (error.message.includes('OPENAI_API_KEY')) {
       console.log(chalk.yellow('\nPlease run setup to configure your OpenAI API key:'));
-      console.log(chalk.cyan('git-commit-ai --setup\n'));
+      console.log(chalk.cyan('cai --setup\n'));
     }
     process.exit(1);
   }
