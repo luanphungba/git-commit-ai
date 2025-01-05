@@ -8,7 +8,7 @@ export const CONFIG_KEYS = {
 export const DEFAULT_OPENAI_MODEL = 'gpt-4o';
 
 const config = new Conf({
-  projectName: 'commit-ai',
+  projectName: '@phungbaluan/commit-ai',
   encryptionKey: 'cai-encryption-key', // Note that this is not intended for security purposes: https://www.npmjs.com/package/conf
 });
 

@@ -91,6 +91,7 @@ Note: The --commit option will be blocked if sensitive information is detected
 2. Sends the diff to OpenAI's API for analysis
 3. AI performs two tasks in parallel:
    - Security check for sensitive information
+   - Code review for potential issues
    - Generation of a meaningful commit message
 4. If sensitive information is found:
    - Displays warnings
@@ -118,12 +119,11 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Future Improvements 🚀
 
-- [ ] Add clean code check
-- [ ] Add whitelist for approved sensitive patterns
-- [ ] Add configuration for security sensitivity levels
+- [x] Support different OpenAI models
+- [ ] Add -h, --help flag
+- [ ] Add code review between 2 branches
 - [ ] Add support for different commit message formats
-- [ ] Add configuration file for custom settings
-- [ ] Support different OpenAI models
+- [ ] Add Custom instructions for Open AI
 
 ## License 📄
 
