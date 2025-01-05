@@ -1,8 +1,51 @@
+# Source files
+src/
+
+# Test files
+test/
+tests/
+__tests__/
+*.test.ts
+*.spec.ts
+
+# Config files
+tsconfig.json
+.prettierrc
+.eslintrc
+.eslintignore
+.editorconfig
+
+# Git files
 .git/
-.env
-.env.*
-.DS_Store
-node_modules/
-*.log
 .gitignore
-.github/ 
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Debug
+.debug/
+
+# Coverage and test output
+coverage/
+.nyc_output/
+test-results/
+jest-coverage/
+
+# Temporary files
+*.tmp
+*~
+.temp/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Documentation
+docs/ 

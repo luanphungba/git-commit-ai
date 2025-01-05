@@ -30,4 +30,32 @@ coverage
 .idea/
 .vscode/
 *.swp
-*.swo 
+*.swo
+
+# Build output
+dist/
+build/
+
+# TypeScript
+*.tsbuildinfo
+
+# Debug
+.debug/
+
+# Temporary files
+*.tmp
+*~
+.temp/
+
+# Test output
+test-results/
+jest-coverage/
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.* 
