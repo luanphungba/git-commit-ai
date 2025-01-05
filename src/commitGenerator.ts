@@ -4,10 +4,11 @@ import { initializeGit, initializeOpenAI } from './client.js';
 import { ChatCompletionCreateParamsNonStreaming } from 'openai/resources/chat/completions';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import { log } from './utils/console.js';
+import { getOpenAiModel } from './utils/config.js';
 
 // Configuration
 const CONFIG = {
-  openAiModel: 'gpt-4o', // better for pricing
+  openAiModel: getOpenAiModel(),
   maxTokens: 500,
   temperature: 0.7
 };
