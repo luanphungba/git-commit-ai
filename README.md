@@ -13,6 +13,10 @@ A CLI tool that uses AI to generate meaningful commit messages by analyzing your
 - 🔒 Security check for sensitive information in changes
 - ⚠️ Prevents commits containing sensitive data
 
+## Demo
+
+![Demo](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXNnaXpqNWU2cW90ZGY3ZXZmeDV1c2NpcWkyb2Fkcmdtc2RqOXMzNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/K1yT54ED5WQg8Xb57r/giphy.gif)
+
 ## Installation 🛠️
 
 Install globally using npm:
