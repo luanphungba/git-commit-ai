@@ -42,19 +42,38 @@ const createAIPrompt = (diff: string) => ({
   messages: [
     {
       role: 'system',
-      content: `You are an AI assistant that performs two tasks:
+      content: `You are an AI assistant that performs three tasks:
 1. Security check: Analyze the git diff for sensitive information. When found, specify:
    - The file path
    - The line number or context
    - The type of sensitive information (API key, password, token, etc.)
    - A brief description of the issue
-2. Generate a commit message: Create a clear, concise and precise commit message following conventional commits format.
+
+2. Code Review: Analyze the changes for:
+   - Potential bugs or issues
+   - Code quality concerns
+   - Performance implications
+   - Best practices violations
+   - Suggestions for improvement
+   Note: Do not include style or linting issues in the review.
+
+3. Generate a commit message: Create a clear, concise and precise commit message following conventional commits format.
 
 Respond in the following JSON format:
 {
   "security": {
     "hasSensitiveInfo": boolean,
     "details": string (Format each issue as "file.js:line - [type]: description")
+  },
+  "review": {
+    "hasIssues": boolean,
+    "feedback": Array<{
+      "file": string,
+      "line": string | number,
+      "type": "bug" | "improvement" | "performance",
+      "description": string,
+      "suggestion": string
+    }>
   },
   "commit": {
     "message": string
@@ -63,7 +82,7 @@ Respond in the following JSON format:
     },
     {
       role: 'user',
-      content: `Please analyze this git diff and generate a commit message:\n\n${diff}`
+      content: `Please analyze this git diff and provide a security check, code review, and commit message:\n\n${diff}`
     }
   ] as ChatCompletionMessageParam[],
   max_tokens: CONFIG.maxTokens,
@@ -86,9 +105,36 @@ type CommitResult = {
   message: string;
 };
 
+// Add new type for review feedback
+type ReviewFeedbackItem = {
+  file: string;
+  line: string | number;
+  type: 'bug' | 'improvement' | 'performance';
+  description: string;
+  suggestion: string;
+};
+
+// Update AIResponse type
 type AIResponse = {
   security: SecurityResult;
+  review: {
+    hasIssues: boolean;
+    feedback: ReviewFeedbackItem[];
+  };
   commit: CommitResult;
+};
+
+// Add function to handle review feedback
+const handleReviewFeedback = (feedback: ReviewFeedbackItem[]) => {
+  if (feedback.length === 0) return;
+
+  log.info('\n📋 Code Review Feedback:');
+  feedback.forEach(item => {
+    log.info(`\nFile: ${item.file}:${item.line}`);
+    log.info(`Type: ${item.type}`);
+    log.warning(`Issue: ${item.description}`);
+    log.success(`Suggestion: ${item.suggestion}\n`);
+  });
 };
 
 type GenerateCommitOptions = {
@@ -96,7 +142,11 @@ type GenerateCommitOptions = {
   debug?: boolean;
 };
 
-const parseAIResponse = (response: OpenAI.Chat.ChatCompletion): { message: string; hasSensitiveInfo: boolean } => {
+const parseAIResponse = (response: OpenAI.Chat.ChatCompletion): { 
+  message: string; 
+  hasSensitiveInfo: boolean;
+  hasReviewIssues: boolean;
+} => {
   try {
     const result = JSON.parse(response.choices[0].message.content || '') as AIResponse;
 
@@ -104,15 +154,21 @@ const parseAIResponse = (response: OpenAI.Chat.ChatCompletion): { message: strin
       handleSecurityWarning(result.security.details);
     }
 
+    if (result.review.hasIssues) {
+      handleReviewFeedback(result.review.feedback);
+    }
+
     return {
       message: result.commit.message,
-      hasSensitiveInfo: result.security.hasSensitiveInfo
+      hasSensitiveInfo: result.security.hasSensitiveInfo,
+      hasReviewIssues: result.review.hasIssues
     };
   } catch (error) {
     log.warning('Warning: Failed to parse AI response, falling back to basic commit message');
     return {
       message: response.choices[0].message.content || '',
-      hasSensitiveInfo: false
+      hasSensitiveInfo: false,
+      hasReviewIssues: false
     };
   }
 };
@@ -130,7 +186,6 @@ export async function generateCommitMessage(options: GenerateCommitOptions) {
 
   const prompt = createAIPrompt(diff);
   const response = await openai.chat.completions.create(prompt);
-  openai.project
 
-  return parseAIResponse(response);
+ return parseAIResponse(response);
 } 

@@ -21,7 +21,8 @@ program
   .option('-d, --debug', 'output debug information')
   .option('-s, --stage', 'stage all changes')
   .option('-c, --commit', 'automatically commit with generated message')
-  .option('--setup', 'run the setup process to configure API key');
+  .option('--setup', 'run the setup process to configure API key')
+  .option('-f, --force', 'commit even if review issues are found');
 
 program.parse();
 
@@ -39,6 +40,12 @@ async function main() {
 
     if (result.hasSensitiveInfo && options.commit) {
       log.error('\n❌ Automatic commit blocked due to sensitive information.\n');
+      process.exit(1);
+    }
+
+    if (result.hasReviewIssues && options.commit && !options.force) {
+      log.warning('\n⚠️ Code review found potential issues.');
+      log.warning('Use --force flag to commit anyway, or review the issues above and make changes.\n');
       process.exit(1);
     }
 
