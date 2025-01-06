@@ -141,7 +141,8 @@ const createAIPrompt = (diffInfo: {
   messages: [
     {
       role: 'system',
-      content: `You are a senior software engineer performing a thorough code review.
+      content: `You are a senior software engineer performing a thorough code review. Provide your response as a JSON object.
+
 Context:
 - Files changed: ${diffInfo.changedFiles.join(', ')}
 - Change statistics:
@@ -218,7 +219,7 @@ Response Format:
     },
     {
       role: 'user',
-      content: `Review this diff:\n\n${diffInfo.diff}`
+      content: `Review this diff and provide the analysis as a JSON response:\n\n${diffInfo.diff}`
     }
   ] as ChatCompletionMessageParam[],
   max_tokens: CONFIG.maxTokens,
