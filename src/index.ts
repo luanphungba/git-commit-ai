@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 import { generateCommitMessage } from './commitGenerator.js';
 import { initializeGit } from './client.js';
 import { spawn } from 'child_process';
@@ -8,6 +8,7 @@ import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { log } from './utils/console.js';
+import { reviewCode } from './code-review.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -24,11 +25,29 @@ program
   .option('--setup', 'run the setup process to configure API key')
   .option('-f, --force', 'commit even if review issues are found');
 
+program
+  .command('review')
+  .alias('r')
+  .argument('<source>', 'source branch')
+  .argument('<target>', 'target branch')
+  .action(async (source, target) => {
+    try {
+      await reviewCode({ sourceBranch: source, targetBranch: target });
+      return;
+    } catch (error) {
+      process.exit(1);
+    }
+  });
+
 program.parse();
 
 const options = program.opts();
 
 async function main() {
+  if (process.argv.includes('review') || process.argv.includes('r')) {
+    return;
+  }
+
   try {
     if (options.setup) {
       const setupScript = join(__dirname, './setup.js');
@@ -62,7 +81,6 @@ async function main() {
     }
 
   } catch (error) {
-    // Type guard for error object
     if (error instanceof Error) {
       log.error('\n❌ Error:', error.message);
       if (error.message.includes('OPENAI_API_KEY')) {
