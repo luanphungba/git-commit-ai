@@ -18,7 +18,7 @@ const program = new Command();
 program
   .name('cai')
   .description('AI-powered git commit message generator')
-  .version('1.0.7')
+  .version('1.0.8')
   .option('-d, --debug', 'output debug information')
   .option('-s, --stage', 'stage all changes')
   .option('-c, --commit', 'automatically commit with generated message')
@@ -44,10 +44,6 @@ program
 program.parse();
 
 async function main(options: any) {
-  if (process.argv.includes('review') || process.argv.includes('r')) {
-    return;
-  }
-
   try {
     if (options.setup) {
       const setupScript = join(__dirname, './setup.js');
