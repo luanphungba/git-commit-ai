@@ -18,12 +18,15 @@ const program = new Command();
 program
   .name('cai')
   .description('AI-powered git commit message generator')
-  .version('1.0.4')
+  .version('1.0.7')
   .option('-d, --debug', 'output debug information')
   .option('-s, --stage', 'stage all changes')
   .option('-c, --commit', 'automatically commit with generated message')
   .option('--setup', 'run the setup process to configure API key')
-  .option('-f, --force', 'commit even if review issues are found');
+  .option('-f, --force', 'commit even if review issues are found')
+  .action(async (options) => {
+    await main(options);
+  });
 
 program
   .command('review')
@@ -33,7 +36,6 @@ program
   .action(async (source, target) => {
     try {
       await reviewCode({ sourceBranch: source, targetBranch: target });
-      return;
     } catch (error) {
       process.exit(1);
     }
@@ -41,9 +43,7 @@ program
 
 program.parse();
 
-const options = program.opts();
-
-async function main() {
+async function main(options: any) {
   if (process.argv.includes('review') || process.argv.includes('r')) {
     return;
   }
@@ -93,5 +93,3 @@ async function main() {
     process.exit(1);
   }
 }
-
-main(); 
