@@ -5,7 +5,7 @@ export const CONFIG_KEYS = {
   OPENAI_MODEL: 'openAiModel',
 };
 
-export const DEFAULT_OPENAI_MODEL = 'gpt-4o';
+export const DEFAULT_OPENAI_MODEL = 'gpt-4o-mini';
 
 const config = new Conf({
   projectName: '@phungbaluan/commit-ai',

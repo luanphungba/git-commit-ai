@@ -12,6 +12,7 @@ A CLI tool that uses AI to generate meaningful commit messages by analyzing your
 - 🐛 Debug mode for troubleshooting
 - 🔒 Security check for sensitive information in changes
 - ⚠️ Prevents commits containing sensitive data
+- 🔍 Code review between branches
 
 ## Demo
 
@@ -41,6 +42,11 @@ You'll be prompted to enter your OpenAI API key. You can get one at: https://pla
     commit-ai
     # or
     cai
+
+    # Review code differences between branches
+    commit-ai review <source-branch> <target-branch>
+    # or
+    cai r <source-branch> <target-branch>
 
     # Stage all changes and see suggested message
     commit-ai --stage
@@ -83,9 +89,11 @@ If sensitive information is detected:
 - -d, --debug: Output debug information
 - -s, --stage: Automatically stage all changes
 - -c, --commit: Automatically commit with generated message
+- -f, --force: Commit even if review issues are found
 - --setup: Configure or update OpenAI API key
+- review (r): Review code differences between two branches
 
-Note: The --commit option will be blocked if sensitive information is detected
+Note: The --commit option will be blocked if sensitive information is detected or if review issues are found (unless --force is used)
 
 ## How it Works 🔍
 
@@ -106,7 +114,6 @@ Note: The --commit option will be blocked if sensitive information is detected
 - OpenAI - For AI-powered commit message generation
 - Commander.js - For CLI argument parsing
 - simple-git - For Git operations
-- dotenv - For environment variable management
 - chalk - For colored console output
 
 ## Contributing 🤝
@@ -122,8 +129,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Future Improvements 🚀
 
 - [x] Support different OpenAI models
+- [x] Add code review between 2 branches
 - [ ] Add -h, --help flag
-- [ ] Add code review between 2 branches
 - [ ] Add support for different commit message formats
 - [ ] Add Custom instructions for Open AI
 
