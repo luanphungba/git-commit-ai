@@ -18,7 +18,7 @@ const program = new Command();
 program
   .name('cai')
   .description('AI-powered git commit message generator')
-  .version('1.0.8')
+  .version('1.0.9')
   .option('-d, --debug', 'output debug information')
   .option('-s, --stage', 'stage all changes')
   .option('-c, --commit', 'automatically commit with generated message')
