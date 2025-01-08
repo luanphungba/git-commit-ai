@@ -93,7 +93,14 @@ export const getSmartDiff = async (options: DiffOptions): Promise<DiffInfo> => {
   let diff: string;
   if (fromBranch && toBranch) {
     // Get diff between branches
-    diff = await git.diff([...baseArgs, `${fromBranch}...${toBranch}`]);
+    try {
+      diff = await git.diff([...baseArgs, `${fromBranch}...${toBranch}`]);
+    } catch (error) {
+      throw new Error(
+        `Failed to get diff between branches. Please verify that '${fromBranch}' and '${toBranch}' are valid branch names.\n` +
+        `Error: ${(error as Error).message}`
+      );
+    }
   } else {
     // Get diff for staged/unstaged changes (original behavior)
     diff = await git.diff(['--staged', ...baseArgs]) || await git.diff(baseArgs);
