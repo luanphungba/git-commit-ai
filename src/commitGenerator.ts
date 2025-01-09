@@ -10,7 +10,7 @@ import { getSmartDiff, DiffInfo } from './utils/diffUtils.js';
 // Configuration
 const CONFIG = {
   openAiModel: getOpenAiModel(),
-  maxTokens: 500,
+  maxTokens: 1000,
   temperature: 0.7
 };
 

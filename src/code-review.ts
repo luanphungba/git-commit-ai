@@ -7,7 +7,7 @@ import { getSmartDiff, DiffInfo } from './utils/diffUtils.js';
 // Configuration
 const CONFIG = {
     openAiModel: getOpenAiModel(),
-    maxTokens: 500,
+    maxTokens: 1000,
     temperature: 0.7
 };
 
@@ -74,20 +74,21 @@ Perform these tasks:
    - Flag any unsafe operations or potential exploits
 
 2. Code Review:
-   Focus on the following aspects in order of priority:
-   - Critical bugs and logic errors
-   - Security vulnerabilities
-   - Breaking changes and API compatibility
-   - Error handling and edge cases
-   - Performance issues in modified code
-   - Architecture and design concerns
+   Focus ONLY on critical bugs and logic errors:
+   - Logic flaws that could cause incorrect behavior
+   - Off-by-one errors
+   - Null/undefined handling issues
+   - Type mismatches
+   - Incorrect error handling
+   - Race conditions
+   - Memory leaks
    
    Guidelines:
+   - Only report issues of type "bug"
    - Review only the code visible in the diff
    - Provide accurate specific code for issues
    - Suggest concrete fixes
    - Consider the function context provided
-   - Focus on substantial issues, not style
 
 Response Format:
 {
@@ -100,7 +101,7 @@ Response Format:
     "feedback": Array<{
       "severity": "high" | "medium" | "low",
       "file": string,
-      "type": "bug" | "security" | "performance" | "architecture" | "reliability",
+      "type": "bug",
       "code": string,
       "description": string,
       "suggestion": string
@@ -162,7 +163,20 @@ export async function reviewCode({ sourceBranch, targetBranch }: CodeReviewOptio
             throw new Error('No response content from OpenAI');
         }
 
-        const result: CodeReviewResult = JSON.parse(content);
+        // Add validation and better error handling for JSON parsing
+        let result: CodeReviewResult;
+        try {
+            result = JSON.parse(content);
+            
+            // Validate the required structure
+            if (!result.security || !result.review) {
+                throw new Error('Invalid response structure: missing required fields');
+            }
+        } catch (parseError) {
+            log.error('\nFailed to parse OpenAI response as JSON');
+            log.info('Raw response:', content);
+            throw new Error(`Invalid JSON response: ${parseError instanceof Error ? parseError.message : 'unknown error'}`);
+        }
 
         // Handle security warnings if any
         if (result.security.hasSensitiveInfo) {
